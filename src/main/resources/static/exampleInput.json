@@ -1,0 +1,30 @@
+{
+  "numberOfUsers": 2,
+  "numberOfPrivileges": 3,
+  "maxStructUnits": 5,
+
+  "userPrivileges": [
+    {
+      "user": 0,
+      "privilege": 0
+    },
+    {
+      "user": 0,
+      "privilege": 1
+    },
+    {
+      "user": 0,
+      "privilege": 2
+    },
+    {
+      "user": 1,
+      "privilege": 0
+    }
+  ],
+  "forbiddenUserPrivileges": [
+    {
+      "user": 1,
+      "privilege": 1
+    }
+  ]
+}
