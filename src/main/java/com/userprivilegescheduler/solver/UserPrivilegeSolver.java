@@ -1,12 +1,13 @@
 package com.userprivilegescheduler.solver;
 
+import com.userprivilegescheduler.io.UserPrivilegeInputDataProvider;
 import com.userprivilegescheduler.models.*;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
 
-import java.util.Optional;
+import java.util.*;
 
 import static org.chocosolver.solver.search.strategy.Search.activityBasedSearch;
 
@@ -62,9 +63,9 @@ public class UserPrivilegeSolver {
 
     private void initModelValues() {
         model = new Model("user privileges");
-
-        numberOfUsers = userInput.getNumberOfUsers();
-        numberOfPrivileges = userInput.getNumberOfPrivileges();
+        Map<String, Integer> entityNumbers = UserPrivilegeInputDataProvider.getEntityNumbers(userInput);
+        numberOfUsers = entityNumbers.get(UserPrivilegeInputDataProvider.USER_KEY);
+        numberOfPrivileges = entityNumbers.get(UserPrivilegeInputDataProvider.PRIVILEGE_KEY);
         maxStructUnits = userInput.getMaxStructUnits();
 
         userPrivileges = model.intVarMatrix(numberOfUsers, numberOfPrivileges, 0, 1);

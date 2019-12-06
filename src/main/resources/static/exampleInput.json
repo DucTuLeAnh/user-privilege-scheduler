@@ -1,6 +1,4 @@
 {
-  "numberOfUsers": 2,
-  "numberOfPrivileges": 3,
   "maxStructUnits": 5,
 
   "userPrivileges": [

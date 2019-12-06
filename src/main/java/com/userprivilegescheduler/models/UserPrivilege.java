@@ -9,6 +9,11 @@ public class UserPrivilege {
     private Integer user;
     private Integer privilege;
 
+    public UserPrivilege(Integer user, Integer privilege){
+        this.user = user;
+        this.privilege = privilege;
+    }
+
     public Integer getUser() {
         return user;
     }

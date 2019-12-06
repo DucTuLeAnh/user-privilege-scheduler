@@ -8,18 +8,14 @@ import java.util.List;
  */
 public class UserPrivilegeInput {
 
-    private Integer numberOfUsers;
-    private Integer numberOfPrivileges;
     private Integer maxStructUnits;
     private List<UserPrivilege> userPrivileges;
     private List<UserPrivilege> forbiddenUserPrivileges;
 
-    public Integer getNumberOfUsers() {
-        return numberOfUsers;
-    }
-
-    public Integer getNumberOfPrivileges() {
-        return numberOfPrivileges;
+    public UserPrivilegeInput(List<UserPrivilege> userPrivileges, List<UserPrivilege> forbiddenUserPrivileges, Integer maxStructUnits){
+        this.userPrivileges = userPrivileges;
+        this.forbiddenUserPrivileges = forbiddenUserPrivileges;
+        this.maxStructUnits = maxStructUnits;
     }
 
     public Integer getMaxStructUnits() {
