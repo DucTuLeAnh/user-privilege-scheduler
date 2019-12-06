@@ -13,7 +13,7 @@ import static org.chocosolver.solver.search.strategy.Search.activityBasedSearch;
 
 /**
  * This class takes an {@link UserPrivilegeInput} object and generates an assignment of users
- * and privileges in struct units, using the CHOCO-Solver.
+ * and privileges in groups, using the CHOCO-Solver.
  */
 public class UserPrivilegeSolver {
     private static final String SEARCH_DURATION = "10s";
@@ -22,16 +22,16 @@ public class UserPrivilegeSolver {
     private UserPrivilegeInput userInput;
     private int numberOfUsers;
     private int numberOfPrivileges;
-    private int numberOfStructs;
-    private int maxStructUnits;
+    private int numberOfGroups;
+    private int maxGroups;
 
     private IntVar[][] userPrivileges;
     private IntVar[][] forbiddenUserPrivileges;
-    private IntVar[][] userInStruct;
-    private IntVar[][] privilegeInStruct;
+    private IntVar[][] userInGroup;
+    private IntVar[][] privilegeInGroup;
 
     /**
-     * Returns an assignment of users a privileges in struct units, if a feasible solution can be found.
+     * Returns an assignment of users a privileges in groups, if a feasible solution can be found.
      * Otherwise an empty {@link Optional}
      * @param input input data
      * @return an assignment or empty {@link Optional}
@@ -39,11 +39,11 @@ public class UserPrivilegeSolver {
     public Optional<UserPrivilegeOutput> findSolution(UserPrivilegeInput input) {
         Solution solution = null;
         UserPrivilegeOutput out = null;
-        numberOfStructs = 0;
+        numberOfGroups = 0;
         userInput = input;
 
-        while (solution == null && numberOfStructs <= maxStructUnits) {
-            numberOfStructs++;
+        while (solution == null && numberOfGroups <= maxGroups) {
+            numberOfGroups++;
             solution = solve();
         }
 
@@ -66,12 +66,12 @@ public class UserPrivilegeSolver {
         Map<String, Integer> entityNumbers = UserPrivilegeInputDataProvider.getEntityNumbers(userInput);
         numberOfUsers = entityNumbers.get(UserPrivilegeInputDataProvider.USER_KEY);
         numberOfPrivileges = entityNumbers.get(UserPrivilegeInputDataProvider.PRIVILEGE_KEY);
-        maxStructUnits = userInput.getMaxStructUnits();
+        maxGroups = userInput.getMaxGroups();
 
         userPrivileges = model.intVarMatrix(numberOfUsers, numberOfPrivileges, 0, 1);
         forbiddenUserPrivileges = model.intVarMatrix(numberOfUsers, numberOfPrivileges, 0, 1);
-        userInStruct = model.intVarMatrix(numberOfUsers, numberOfStructs, 0, 1);
-        privilegeInStruct = model.intVarMatrix(numberOfPrivileges, numberOfStructs, 0, 1);
+        userInGroup = model.intVarMatrix(numberOfUsers, numberOfGroups, 0, 1);
+        privilegeInGroup = model.intVarMatrix(numberOfPrivileges, numberOfGroups, 0, 1);
     }
 
     private void prepareAllConstraints() {
@@ -107,18 +107,18 @@ public class UserPrivilegeSolver {
 
     /**
      * This constraint describes, that if an forbidden privilege is assigned to an user. That user is
-     * not allowed to be in the same struct unit as the forbidden privilege.
+     * not allowed to be in the same group as the forbidden privilege.
      */
     private void prepareConstraint3() {
         for (int i = 0; i < numberOfUsers; i++) {
             for (int j = 0; j < numberOfPrivileges; j++) {
-                for (int k = 0; k < numberOfStructs; k++) {
+                for (int k = 0; k < numberOfGroups; k++) {
                     model.ifThen(
                             model.arithm(forbiddenUserPrivileges[i][j], "=", 1),
                             model.not(
                                     model.and(
-                                            model.arithm(userInStruct[i][k], "=", 1),
-                                            model.arithm(privilegeInStruct[j][k], "=", 1)
+                                            model.arithm(userInGroup[i][k], "=", 1),
+                                            model.arithm(privilegeInGroup[j][k], "=", 1)
                                     ))
                     );
                 }
@@ -127,16 +127,16 @@ public class UserPrivilegeSolver {
     }
 
     /**
-     * This constraint describes, that each user has to be in exactly one struct unit.
+     * This constraint describes, that each user has to be in exactly one group.
      */
     private void prepareConstraint4() {
         for (int i = 0; i < numberOfUsers; i++) {
-            model.sum(userInStruct[i], "=", 1).post();
+            model.sum(userInGroup[i], "=", 1).post();
         }
     }
 
     /**
-     * If a user has a privilege. The user has to be at least in one struct unit
+     * If a user has a privilege. The user has to be at least in one group
      * as it's privilege.
      */
     private void prepareConstraint5() {
@@ -144,9 +144,9 @@ public class UserPrivilegeSolver {
         for (int i = 0; i < numberOfUsers; i++) {
             for (int j = 0; j < numberOfPrivileges; j++) {
 
-                Constraint[] atLeastOneMatch = new Constraint[numberOfStructs];
-                for (int k = 0; k < numberOfStructs; k++) {
-                    atLeastOneMatch[k] = model.and(model.arithm(userInStruct[i][k], "=", 1), model.arithm(privilegeInStruct[j][k], "=", 1));
+                Constraint[] atLeastOneMatch = new Constraint[numberOfGroups];
+                for (int k = 0; k < numberOfGroups; k++) {
+                    atLeastOneMatch[k] = model.and(model.arithm(userInGroup[i][k], "=", 1), model.arithm(privilegeInGroup[j][k], "=", 1));
                 }
 
                 model.ifThen(model.arithm(userPrivileges[i][j], "=", 1),
@@ -160,18 +160,18 @@ public class UserPrivilegeSolver {
         UserPrivilegeOutput out = new UserPrivilegeOutput();
 
         for (int i = 0; i < numberOfUsers; i++) {
-            for (int j = 0; j < numberOfStructs; j++) {
+            for (int j = 0; j < numberOfGroups; j++) {
 
-                if(solution.getIntVal(userInStruct[i][j])== 1){
-                    out.getUserInStructList().add(new UserInStruct(i,j));
+                if(solution.getIntVal(userInGroup[i][j])== 1){
+                    out.getUserInGroupList().add(new UserInGroup(i,j));
                 }
             }
         }
 
         for (int i = 0; i < numberOfPrivileges; i++) {
-            for (int j = 0; j < numberOfStructs; j++) {
-                if(solution.getIntVal(privilegeInStruct[i][j]) == 1){
-                    out.getPrivilegeInStructList().add(new PrivilegeInStruct(i,j));
+            for (int j = 0; j < numberOfGroups; j++) {
+                if(solution.getIntVal(privilegeInGroup[i][j]) == 1){
+                    out.getPrivilegeInGroupList().add(new PrivilegeInGroup(i,j));
                 }
             }
         }

@@ -1,7 +1,7 @@
 package com.userprivilegescheduler.io;
 
-import com.userprivilegescheduler.models.PrivilegeInStruct;
-import com.userprivilegescheduler.models.UserInStruct;
+import com.userprivilegescheduler.models.PrivilegeInGroup;
+import com.userprivilegescheduler.models.UserInGroup;
 import com.userprivilegescheduler.models.UserPrivilegeOutput;
 
 /**
@@ -12,12 +12,12 @@ public class UserPrivilegeOutputPrinter {
 
     public void printOutput(UserPrivilegeOutput output) {
 
-        for (UserInStruct u : output.getUserInStructList()) {
-            System.out.println("User in struct: (" + u.getUser() + "," + u.getStruct() + ")");
+        for (UserInGroup u : output.getUserInGroupList()) {
+            System.out.println("User in group: (" + u.getUser() + "," + u.getGroup() + ")");
         }
         System.out.println("\n");
-        for (PrivilegeInStruct p : output.getPrivilegeInStructList()) {
-            System.out.println("Privilege in struct: (" + p.getPrivilege() + "," + p.getStruct() + ")");
+        for (PrivilegeInGroup p : output.getPrivilegeInGroupList()) {
+            System.out.println("Privilege in group: (" + p.getPrivilege() + "," + p.getGroup() + ")");
         }
 
     }

@@ -2,10 +2,9 @@
 This project provides an example for using the CHOCO solver to solve scheduling problems.
 
 ## The problem
-In this example we are trying to slot users and privileges of a system (e.g some IT-apartment) in specific groups. 
-These groups will be called 'struct units'.
+In this example we are trying to slot users and privileges of a system (e.g some IT-apartment) into specific groups. 
 Privileges can be assigned or suspended from users.
-The goal is to slot the users and privileges in the 'struct units' in such a way that they can access the privileges assigned,
+The goal is to slot the users and privileges into the groups in such a way that they can access the privileges assigned,
 but cannot access the privileges they are suspended from.
 
 ## Build project

@@ -1,25 +1,25 @@
 package com.userprivilegescheduler.models;
 
 /**
- * Contains a tuple of id's representing the privilege which is assigned to a struct.
+ * Contains a tuple of id's representing the privilege which is assigned to a group.
  * This tuple is part of the {@link UserPrivilegeOutput} data structure, which can be parsed
  * to JSON.
  */
-public class PrivilegeInStruct {
+public class PrivilegeInGroup {
 
     private int privilege;
-    private int struct;
+    private int group;
 
-    public PrivilegeInStruct(int privilege, int struct){
+    public PrivilegeInGroup(int privilege, int group){
         this.privilege = privilege;
-        this.struct = struct;
+        this.group = group;
     }
 
     public int getPrivilege() {
         return privilege;
     }
 
-    public int getStruct() {
-        return struct;
+    public int getGroup() {
+        return group;
     }
 }
