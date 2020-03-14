@@ -12,6 +12,7 @@ import java.util.*;
 import static org.chocosolver.solver.search.strategy.Search.activityBasedSearch;
 
 /**
+ * todo: make the privilege solver stateless
  * This class takes an {@link UserPrivilegeInput} object and generates an assignment of users
  * and privileges in groups, using the CHOCO-Solver.
  */
@@ -33,6 +34,8 @@ public class UserPrivilegeSolver {
     /**
      * Returns an assignment of users a privileges in groups, if a feasible solution can be found.
      * Otherwise an empty {@link Optional}
+     *
+     * todo: something smells here, there is no single responsibility
      * @param input input data
      * @return an assignment or empty {@link Optional}
      */
