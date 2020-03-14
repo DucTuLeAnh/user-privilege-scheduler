@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Entry point of the application.
+ * Todo: Unit tests for constraint model.
  */
 @SpringBootApplication
 public class UserPrivilegeSchedulerApplication {
