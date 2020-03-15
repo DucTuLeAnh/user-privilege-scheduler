@@ -38,7 +38,7 @@ public class UserPrivilegeSolver {
      * @return an assignment or empty {@link Optional}
      */
     public Optional<UserPrivilegeOutput> findSolution(UserPrivilegeInput input) {
-        userInput = input;
+        initModelValues(input);
         Solution solution = searchSolutionUntilMaxGroupNumberReached();
         return Optional.ofNullable(solution).map(this::getOutputForSolution);
     }
@@ -54,14 +54,14 @@ public class UserPrivilegeSolver {
     }
 
     private Solution solve() {
-        initModelValues();
         prepareAllConstraints();
         initSolverParameter();
         return model.getSolver().findSolution();
     }
 
-    private void initModelValues() {
+    private void initModelValues(UserPrivilegeInput input) {
         model = new Model("user privileges");
+        userInput = input;
         Map<String, Integer> entityNumbers = UserPrivilegeInputDataProvider.getEntityNumbers(userInput);
         numberOfUsers = entityNumbers.get(UserPrivilegeInputDataProvider.USER_KEY);
         numberOfPrivileges = entityNumbers.get(UserPrivilegeInputDataProvider.PRIVILEGE_KEY);
